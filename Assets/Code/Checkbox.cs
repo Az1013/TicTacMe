@@ -4,51 +4,42 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Checkbox : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
+public class Checkbox : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
 {
+    public GameController Game;
+    public int ID;
+    bool canClick;
 
-    public enum Content
-    {
-        None = 0,
-        PlayerOne = 1,
-        PlayerTwo = 2,
-    };
 
-    public Content currentContent;
-    GameController myGame;
-    public Sprite Check;
-
-    // Start is called before the first frame update
     void Start()
     {
-        myGame = FindObjectOfType<GameController>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void HoverMe()
-    {
-        Debug.Log("I'm Here", this);
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Debug.Log("Enter Me", this);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Debug.Log("Exit Me", this);
+        Game = FindObjectOfType<GameController>();
+        canClick = true;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Click Me", this);
-        GetComponent<Image>().sprite = Check;
-        currentContent = Content.PlayerOne;
+        if (!canClick) return;
+        if (Game.currentTurn == GameController.Turns.Victory || Game.currentTurn == GameController.Turns.Defeat) return;
+        canClick = false;
+
+        //Si c'est le joueur 1 qui joue, je prends le sprite One
+        //Si c'est le joueur 2 qui joue, je prends le sprite Two
+
+        if(Game.currentTurn == GameController.Turns.PlayerOne)
+        {
+            GetComponent<Image>().sprite = Game.spriteOne;
+        }
+
+        else if (Game.currentTurn == GameController.Turns.PlayerTwo)
+        {
+            GetComponent<Image>().sprite = Game.spriteTwo;
+        }
+        Game.changeTurn(ID);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        
     }
 }
